@@ -1,0 +1,683 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👑 متجر الأريج - للعطور الفاخرة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        :root {
+            --bg-dark: #160c18;
+            --bg-card: rgba(35, 18, 38, 0.7);
+            --accent-rose: #e899ac;
+            --accent-gold: #f3c87a;
+            --purple-glow: #38153d;
+            --text-light: #fff5f8;
+            --text-muted: #cbb4be;
+            --border-color: rgba(232, 153, 172, 0.2);
+            --glass-bg: rgba(22, 12, 24, 0.85);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(232, 153, 172, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(243, 200, 122, 0.05) 0%, transparent 40%);
+        }
+
+        /* Navbar */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 8%;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            background: linear-gradient(135deg, var(--accent-rose), var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        nav button {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        nav button:hover, nav button.active {
+            background: linear-gradient(135deg, var(--accent-rose), #b86079);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(232, 153, 172, 0.3);
+            font-weight: 700;
+        }
+
+        .container {
+            padding-top: 90px;
+            padding-bottom: 50px;
+            padding-left: 8%;
+            padding-right: 8%;
+            flex: 1;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .tab-content.active-tab { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- HERO SECTION (الصفحة الرئيسية) --- */
+        .hero-banner {
+            position: relative;
+            width: 100%;
+            min-height: 480px;
+            border-radius: 24px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(rgba(22, 12, 24, 0.55), rgba(22, 12, 24, 0.85)),
+                        url('https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .hero-content {
+            max-width: 750px;
+            padding: 40px 20px;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(232, 153, 172, 0.15);
+            border: 1px solid var(--accent-rose);
+            color: var(--accent-rose);
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .hero-title {
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 15px;
+            color: var(--text-light);
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, var(--accent-rose), var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.8;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-rose), #c26982);
+            color: #fff;
+            padding: 12px 32px;
+            border-radius: 30px;
+            border: none;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s ease;
+            box-shadow: 0 6px 20px rgba(232, 153, 172, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(232, 153, 172, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            padding: 12px 32px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(232, 153, 172, 0.1);
+            border-color: var(--accent-rose);
+        }
+
+        /* Section Title Filters Demo */
+        .demo-section-title {
+            text-align: center;
+            margin: 30px 0 20px 0;
+            font-size: 22px;
+            color: var(--accent-gold);
+        }
+
+        /* Feature Cards Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 22px;
+            border-radius: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover { transform: translateY(-5px); }
+
+        .feature-icon {
+            font-size: 26px;
+            color: var(--accent-gold);
+            margin-bottom: 10px;
+        }
+
+        .feature-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-light);
+        }
+
+        .feature-desc {
+            font-size: 13px;
+            color: var(--accent-rose);
+            font-weight: 600;
+        }
+
+        /* Headers General */
+        .page-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .page-header h1 { font-size: 30px; margin-bottom: 6px; }
+        .page-header h1 span { color: var(--accent-rose); }
+        .page-header p { color: var(--text-muted); font-size: 14px; }
+
+        /* Store Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(8px);
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent-rose);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background-color: var(--purple-glow);
+        }
+
+        .product-info {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .product-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text-light);
+        }
+
+        .product-cat {
+            font-size: 12px;
+            color: var(--accent-rose);
+            margin-bottom: 15px;
+        }
+
+        .product-bottom {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--accent-gold);
+        }
+
+        .btn-buy {
+            background: linear-gradient(135deg, var(--accent-rose), #b86079);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 20px;
+            border: none;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-buy:hover { opacity: 0.9; transform: scale(1.05); }
+
+        /* Forms & Tables */
+        .form-container {
+            max-width: 550px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-muted); }
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: rgba(18, 9, 20, 0.8);
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        .form-control:focus { outline: none; border-color: var(--accent-rose); }
+
+        .table-responsive {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        table { width: 100%; border-collapse: collapse; text-align: center; }
+        th { background: rgba(232, 153, 172, 0.1); color: var(--accent-rose); padding: 14px; font-size: 14px; }
+        td { padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 13px; }
+
+        footer {
+            background: rgba(18, 9, 20, 0.95);
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo" onclick="switchTab('home')">
+        <i class="fas fa-crown" style="color: var(--accent-gold);"></i>
+        متجر <span>الأريج</span>
+    </div>
+    <nav>
+        <button id="btn-home" class="active" onclick="switchTab('home')"><i class="fas fa-home"></i> الرئيسية</button>
+        <button id="btn-store" onclick="switchTab('store')"><i class="fas fa-store"></i> متجر العطور</button>
+        <button id="btn-order-now" onclick="switchTab('order-now')"><i class="fas fa-paper-plane"></i> طلب جديد</button>
+        <button id="btn-customers" onclick="switchTab('customers')"><i class="fas fa-users"></i> العملاء</button>
+        <button id="btn-orders" onclick="switchTab('orders')"><i class="fas fa-list"></i> إدارة الطلبات</button>
+    </nav>
+</header>
+
+<div class="container">
+
+    <!-- 1. الصفحة الرئيسية (Hero Section + Template Filters Demo) -->
+    <div id="tab-home" class="tab-content active-tab">
+        <div class="hero-banner">
+            <div class="hero-content">
+                <!-- تطبيق الفلاتر: upper & lower -->
+                <span class="hero-badge"><i class="fas fa-sparkles"></i> {{ store_name|upper|default:"متجر الأريج للعطور الفاخرة" }}</span>
+                <h1 class="hero-title">عالم من <span>الأناقة والعبق</span> الساحر</h1>
+                <p class="hero-subtitle">
+                    أهلاً بكِ في **{{ store_name|lower|default:"متجر الأريج للعطور الفاخرة" }}**، حيث ننسج الحكايات من أندر خلاصة الزهور وأرقى العود والمسك.
+                    مجموعتنا المصممة بعناية تمنحك بصمة عطرية تدوم طويلاً وتأسر الحواس.
+                </p>
+                <div class="hero-btns">
+                    <button class="btn-primary" onclick="switchTab('store')"><i class="fas fa-shopping-bag"></i> استكشفي العطور</button>
+                    <button class="btn-secondary" onclick="switchTab('order-now')"><i class="fas fa-magic"></i> اطلبي عطركِ المفضل</button>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="demo-section-title"><i class="fas fa-code"></i> معلومات المتجر ودوال التحويل (Django Template Filters)</h3>
+
+        <!-- عرض دوال التحويل الـ 9 المطلوبة في التكليف -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-font feature-icon"></i>
+                <div class="feature-title">1. Upper (حروف كبيرة)</div>
+                <div class="feature-desc">{{ store_name|upper|default:"AL-AREEJ STORE" }}</div>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-font feature-icon"></i>
+                <div class="feature-title">2. Lower (حروف صغيرة)</div>
+                <div class="feature-desc">{{ store_name|lower|default:"al-areej store" }}</div>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-heading feature-icon"></i>
+                <div class="feature-title">3. Title (بداية الكلمات)</div>
+                <div class="feature-desc">{{ store_name|title|default:"متجر الأريج للعطور" }}</div>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-crown feature-icon"></i>
+                <div class="feature-title">4. Capfirst (أول حرف كبير)</div>
+                <div class="feature-desc">{{ top_perfume|capfirst|default:"عود الملكي الفاخر" }}</div>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-cut feature-icon"></i>
+                <div class="feature-title">5. Truncatechars (قص النص)</div>
+                <div class="feature-desc">{{ top_perfume|truncatechars:8|default:"عود الم..." }}</div>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-ruler feature-icon"></i>
+                <div class="feature-title">6. Length (عدد الحروف)</div>
+                <div class="feature-desc">{{ city|length|default:"6" }} حروف</div>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-star feature-icon"></i>
+                <div class="feature-title">7. First (أول عنصر/حرف)</div>
+                <div class="feature-desc">{{ city|first|default:"ص" }}</div>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-shield-alt feature-icon"></i>
+                <div class="feature-title">8. Default (القيمة الافتراضية)</div>
+                <div class="feature-desc">{{ city|default:"صنعاء - الفرع الرئيسي" }}</div>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-toggle-on feature-icon"></i>
+                <div class="feature-title">9. Check Condition (الشرط)</div>
+                <div class="feature-desc">{% if is_open %}✅ مفتوح الآن{% else %}❌ مغلق{% endif %}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. متجر العطور (واجهة العميل) -->
+    <div id="tab-store" class="tab-content">
+        <div class="page-header">
+            <h1>تشكيلة <span>العطور الفاخرة</span></h1>
+            <p>اختاري ما يعبر عن شخصيتكِ واطلبي بلمسة زر</p>
+        </div>
+        <div class="products-grid">
+           
+            <div class="product-card">
+                <img src="{% static 'images/1.jpeg' %}" alt="عود الملكي" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=400&auto=format&fit=crop'">
+                <div class="product-info">
+                    <div class="product-title">عود الملكي</div>
+                    <div class="product-cat">شرقي / فاخر</div>
+                    <div class="product-bottom">
+                        <span class="product-price">$120</span>
+                        <button class="btn-buy" onclick="selectPerfumeAndOrder('عود الملكي')">طلب الآن</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="{% static 'images/2.jpeg' %}" alt="زهور الريف" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=400&auto=format&fit=crop'">
+                <div class="product-info">
+                    <div class="product-title">زهور الريف</div>
+                    <div class="product-cat">زهور طبيعية</div>
+                    <div class="product-bottom">
+                        <span class="product-price">$75</span>
+                        <button class="btn-buy" onclick="selectPerfumeAndOrder('زهور الريف')">طلب الآن</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="{% static 'images/3.jpeg' %}" alt="خشب الصندل" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=400&auto=format&fit=crop'">
+                <div class="product-info">
+                    <div class="product-title">خشب الصندل</div>
+                    <div class="product-cat">خشبي هادئ</div>
+                    <div class="product-bottom">
+                        <span class="product-price">$95</span>
+                        <button class="btn-buy" onclick="selectPerfumeAndOrder('خشب الصندل')">طلب الآن</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="{% static 'images/4.jpeg' %}" alt="سحر اللافندر" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=400&auto=format&fit=crop'">
+                <div class="product-info">
+                    <div class="product-title">سحر اللافندر</div>
+                    <div class="product-cat">فرنسي راقي</div>
+                    <div class="product-bottom">
+                        <span class="product-price">$110</span>
+                        <button class="btn-buy" onclick="selectPerfumeAndOrder('سحر اللافندر')">طلب الآن</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="{% static 'images/5.jpeg' %}" alt="مسك البودرة" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=400&auto=format&fit=crop'">
+                <div class="product-info">
+                    <div class="product-title">مسك البودرة</div>
+                    <div class="product-cat">ناعم / يومي</div>
+                    <div class="product-bottom">
+                        <span class="product-price">$85</span>
+                        <button class="btn-buy" onclick="selectPerfumeAndOrder('مسك البودرة')">طلب الآن</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="{% static 'images/6.jpeg' %}" alt="عنبر الليل" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1615397349754-cfa2066a298e?q=80&w=400&auto=format&fit=crop'">
+                <div class="product-info">
+                    <div class="product-title">عنبر الليل</div>
+                    <div class="product-cat">دافئ / سهرة</div>
+                    <div class="product-bottom">
+                        <span class="product-price">$130</span>
+                        <button class="btn-buy" onclick="selectPerfumeAndOrder('عنبر الليل')">طلب الآن</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 3. صفحة نموذج الطلب للعميل -->
+    <div id="tab-order-now" class="tab-content">
+        <div class="page-header">
+            <h1>إرسال <span>طلب جديد</span></h1>
+            <p>يرجى تعبئة البيانات لتأكيد شحن العطر المفضل لديك</p>
+        </div>
+        <div class="form-container">
+            <form onsubmit="alert('تم إرسال طلبك بنجاح!'); return false;">
+                <div class="form-group">
+                    <label>اسم العميل الكامل</label>
+                    <input type="text" class="form-control" placeholder="مثال: علي محمد" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف</label>
+                    <input type="tel" class="form-control" placeholder="770000000" required>
+                </div>
+                <div class="form-group">
+                    <label>العطر المطلوب</label>
+                    <select id="perfumeSelect" class="form-control">
+                        <option value="عود الملكي">عود الملكي - $120</option>
+                        <option value="زهور الريف">زهور الريف - $75</option>
+                        <option value="خشب الصندل">خشب الصندل - $95</option>
+                        <option value="سحر اللافندر">سحر اللافندر - $110</option>
+                        <option value="مسك البودرة">مسك البودرة - $85</option>
+                        <option value="عنبر الليل">عنبر الليل - $130</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>العنوان / المدينة</label>
+                    <input type="text" class="form-control" placeholder="مثال: صنعاء - شارع حدة" required>
+                </div>
+                <button type="submit" class="btn-buy" style="width: 100%; padding: 12px; font-size: 15px; margin-top: 10px;">تأكيد وطلب الآن</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. سجل العملاء -->
+    <div id="tab-customers" class="tab-content">
+        <div class="page-header">
+            <h1>سجل <span>العملاء</span></h1>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr><th>#</th><th>الاسم</th><th>العمر</th><th>الهاتف</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>علي محمد</td><td>24</td><td>700123456</td></tr>
+                    <tr><td>2</td><td>فاطمة حسن</td><td>30</td><td>700654321</td></tr>
+                    <tr><td>3</td><td>محمد عبدالله</td><td>45</td><td>700987654</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 5. إدارة الطلبات -->
+    <div id="tab-orders" class="tab-content">
+        <div class="page-header">
+            <h1>إدارة <span>الطلبات</span></h1>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr><th>الرقم</th><th>العطر</th><th>العميل</th><th>التاريخ</th><th>الحالة</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>#101</td><td>عود الملكي</td><td>علي محمد</td><td>2026-08-02</td><td style="color:#81c784;">مكتمل</td></tr>
+                    <tr><td>#102</td><td>زهور الريف</td><td>فاطمة حسن</td><td>2026-08-02</td><td style="color:#ffb74d;">قيد التجهيز</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <p>👑 متجر الأريج للعطور الفاخرة - جميع الحقوق محفوظة © 2026</p>
+</footer>
+
+<script>
+    function switchTab(tabName) {
+        const tabs = document.querySelectorAll('.tab-content');
+        tabs.forEach(tab => tab.classList.remove('active-tab'));
+
+        const buttons = document.querySelectorAll('nav button');
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        const selectedTab = document.getElementById('tab-' + tabName);
+        if (selectedTab) selectedTab.classList.add('active-tab');
+
+        const selectedBtn = document.getElementById('btn-' + tabName);
+        if (selectedBtn) selectedBtn.classList.add('active');
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function selectPerfumeAndOrder(perfumeName) {
+        switchTab('order-now');
+        const select = document.getElementById('perfumeSelect');
+        if(select) {
+            for(let i=0; i < select.options.length; i++) {
+                if(select.options[i].value === perfumeName) {
+                    select.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
