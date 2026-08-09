@@ -1,0 +1,90 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}{{ perfume.name }} | روائح الذهب{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="product-detail">
+            <!-- ====== Product Image ====== -->
+            <div class="detail-image">
+                {% if perfume.image %}
+                    <img src="{{ perfume.image.url }}" alt="{{ perfume.name }}">
+                {% else %}
+                    <div class="no-image large">🌸</div>
+                {% endif %}
+            </div>
+            
+            <!-- ====== Product Info ====== -->
+            <div class="detail-info">
+                <!-- دالة upper -->
+                <span class="detail-brand">{{ perfume.brand|upper }}</span>
+                <!-- دالة title -->
+                <h1 class="detail-title">{{ perfume.name|title }}</h1>
+                
+                <!-- دالة wordcount -->
+                <p class="detail-wordcount">الوصف: {{ perfume.description|wordcount }} كلمة</p>
+                
+                <div class="detail-price">
+                    <span class="current-price large">{{ perfume.price|floatformat:2 }} ر.س</span>
+                    {% if perfume.old_price %}
+                        <span class="old-price large">{{ perfume.old_price|floatformat:2 }} ر.س</span>
+                        <span class="discount-text">وفّر {{ perfume.discount_percentage }}%</span>
+                    {% endif %}
+                </div>
+                
+                <!-- دالة striptags (تجريد الوسوم) + linebreaks -->
+                <div class="detail-description">
+                    {{ perfume.description|linebreaks }}
+                </div>
+                
+                <!-- ====== Stock Info ====== -->
+                <div class="stock-info">
+                    {% if in_stock %}
+                        <span class="in-stock">✓ متوفر في المخزن ({{ perfume.stock }} قطعة)</span>
+                    {% else %}
+                        <span class="out-of-stock">✕ غير متوفر حالياً</span>
+                    {% endif %}
+                </div>
+                
+                <!-- ====== Actions ====== -->
+                <div class="detail-actions">
+                    {% if in_stock %}
+                        <a href="{% url 'shop:add_to_cart' perfume.pk %}" class="btn btn-primary btn-large">
+                            🛒 أضف إلى السلة
+                        </a>
+                    {% else %}
+                        <button class="btn btn-disabled" disabled>غير متوفر</button>
+                    {% endif %}
+                    <a href="{% url 'shop:product_list' %}" class="btn btn-outline">← العودة للعطور</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ====== Related Products ====== -->
+        {% if related_perfumes %}
+            <div class="related-section">
+                <h2 class="section-title">عطور مشابهة</h2>
+                <div class="products-grid small-grid">
+                    {% for related in related_perfumes %}
+                        <div class="product-card compact">
+                            <div class="product-image">
+                                {% if related.image %}
+                                    <img src="{{ related.image.url }}" alt="{{ related.name }}">
+                                {% else %}
+                                    <div class="no-image">🌸</div>
+                                {% endif %}
+                            </div>
+                            <div class="product-info">
+                                <h4>{{ related.name|truncatechars:18 }}</h4>
+                                <p class="price">{{ related.price|floatformat:2 }} ر.س</p>
+                                <a href="{% url 'shop:product_detail' related.pk %}" class="btn btn-small">عرض</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

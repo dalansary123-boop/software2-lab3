@@ -1,0 +1,92 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}جميع العطور | روائح الذهب{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="page-title">تشكيلة العطور</h1>
+        
+        <!-- ====== Search & Filter ====== -->
+        <div class="filter-bar">
+            <form method="get" class="search-form">
+                <input type="text" name="q" placeholder="ابحث عن عطر أو ماركة..." value="{{ query|default:'' }}" class="search-input">
+                <button type="submit" class="btn btn-primary">🔍 بحث</button>
+            </form>
+            
+            <div class="sort-options">
+                <span>ترتيب:</span>
+                <a href="?sort=newest{% if query %}&q={{ query }}{% endif %}" class="sort-link {% if sort_by == 'newest' or not sort_by %}active{% endif %}">الأحدث</a>
+                <a href="?sort=price_low{% if query %}&q={{ query }}{% endif %}" class="sort-link {% if sort_by == 'price_low' %}active{% endif %}">السعر: من低 إلى高</a>
+                <a href="?sort=price_high{% if query %}&q={{ query }}{% endif %}" class="sort-link {% if sort_by == 'price_high' %}active{% endif %}">السعر: من高 إلى低</a>
+                <a href="?sort=name{% if query %}&q={{ query }}{% endif %}" class="sort-link {% if sort_by == 'name' %}active{% endif %}">الاسم</a>
+            </div>
+        </div>
+        
+        <!-- ====== Results Count ====== -->
+        <p class="results-count">
+            <!-- دالة pluralize -->
+            {% if query %}
+                نتائج البحث عن: <strong>"{{ query }}"</strong> - 
+            {% endif %}
+            <!-- دالة length -->
+            {{ total_count }} عطر متاح
+        </p>
+        
+        <!-- ====== Products Grid ====== -->
+        <div class="products-grid">
+            {% for perfume in perfumes %}
+                <div class="product-card">
+                    <div class="product-image">
+                        {% if perfume.image %}
+                            <img src="{{ perfume.image.url }}" alt="{{ perfume.name }}">
+                        {% else %}
+                            <div class="no-image">🌸</div>
+                        {% endif %}
+                        
+                        {% if perfume.old_price and perfume.old_price > perfume.price %}
+                            <span class="discount-badge">-{{ perfume.discount_percentage }}%</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="product-info">
+                        <!-- دالة title -->
+                        <h3>{{ perfume.name|title }}</h3>
+                        <!-- دالة upper -->
+                        <p class="brand">{{ perfume.brand|upper }}</p>
+                        <!-- دالة truncatechars -->
+                        <p class="description">{{ perfume.description|truncatechars:60 }}</p>
+                        
+                        <div class="product-price">
+                            <span class="current-price">{{ perfume.price|floatformat:2 }} ر.س</span>
+                            {% if perfume.old_price %}
+                                <span class="old-price">{{ perfume.old_price|floatformat:2 }} ر.س</span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- ====== شرط if ====== -->
+                        {% if perfume.stock > 5 %}
+                            <span class="stock-badge in-stock">✓ متوفر</span>
+                        {% elif perfume.stock > 0 %}
+                            <span class="stock-badge low-stock">⚠ باقي {{ perfume.stock }} فقط</span>
+                        {% else %}
+                            <span class="stock-badge out-stock">✕ نفذت الكمية</span>
+                        {% endif %}
+                        <div class="card-actions">
+                            <a href="{% url 'shop:product_detail' perfume.pk %}" class="btn btn-outline">تفاصيل</a>
+                            {% if perfume.stock > 0 %}
+                                <a href="{% url 'shop:add_to_cart' perfume.pk %}" class="btn btn-primary">🛒 أضف</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="empty-state">
+                    <p>😔 لا توجد عطور مطابقة لبحثك</p>
+                    <a href="{% url 'shop:product_list' %}" class="btn btn-primary">عرض كل العطور</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

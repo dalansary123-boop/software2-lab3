@@ -1,0 +1,87 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}سلة التسوق | روائح الذهب{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="page-title">🛒 سلة التسوق</h1>
+        
+        {% if cart_items %}
+            <div class="cart-container">
+                <div class="cart-items">
+                    {% for item in cart_items %}
+                        <div class="cart-item">
+                            <div class="item-image">
+                                {% if item.perfume.image %}
+                                    <img src="{{ item.perfume.image.url }}" alt="{{ item.perfume.name }}">
+                                {% else %}
+                                    <div class="no-image">🌸</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="item-details">
+                                <!-- دالة title -->
+                                <h3>{{ item.perfume.name|title }}</h3>
+                                <!-- دالة upper -->
+                                <p class="item-brand">{{ item.perfume.brand|upper }}</p>
+                                <p class="item-price">السعر: {{ item.perfume.price|floatformat:2 }} ر.س</p>
+                            </div>
+                            
+                            <div class="item-quantity">
+                                <form method="post" action="{% url 'shop:update_cart' item.pk %}" class="qty-form">
+                                    {% csrf_token %}
+                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.perfume.stock }}" class="qty-input">
+                                    <button type="submit" class="btn btn-small">تحديث</button>
+                                </form>
+                            </div>
+                            
+                            <div class="item-total">
+                                <!-- دالة floatformat -->
+                                <span class="total-label">{{ item.quantity }} × {{ item.perfume.price|floatformat:2 }}</span>
+                                <span class="total-price">{{ item.total_price|floatformat:2 }} ر.س</span>
+                            </div>
+                            
+                            <a href="{% url 'shop:remove_from_cart' item.pk %}" class="btn-remove" onclick="return confirm('هل أنت متأكد من الحذف؟')">🗑</a>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="cart-summary">
+                    <h3>ملخص الطلب</h3>
+                    
+                    <!-- ====== حلقة for لحساب الإجمالي ====== -->
+                    {% with subtotal=total %}
+                        <div class="summary-row">
+                            <span>المجموع الفرعي:</span>
+                            <span>{{ subtotal|floatformat:2 }} ر.س</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>الشحن:</span>
+                            <!-- دالة default -->
+                            <span>{{ "مجاني"|default:"30.00 ر.س" }}</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>الإجمالي:</span>
+                            <span>{{ subtotal|floatformat:2 }} ر.س</span>
+                        </div>
+                    {% endwith %}
+                    
+                    <!-- دالة length -->
+                    <p class="item-count">عدد المنتجات: {{ cart_items|length }}</p>
+                     <a href="{% url 'login' %}" class="btn btn-primary btn-large btn-block">إتمام الشراء</a>
+                    <!-- <a href="{% url 'shop:checkout' %}" class="btn btn-primary btn-large btn-block">إتمام الشراء</a> -->
+                    <a href="{% url 'shop:product_list' %}" class="btn btn-outline btn-block">مواصلة التسوق</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-cart">
+                <div class="empty-icon">🛒</div>
+                <h2>سلة التسوق فارغة</h2>
+                <p>لم تضف أي عطور بعد! تصفح مجموعتنا واختر ما يناسبك</p>
+                <a href="{% url 'shop:product_list' %}" class="btn btn-primary">تصفح العطور</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

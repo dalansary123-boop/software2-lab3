@@ -1,0 +1,80 @@
+{% extends 'shop/base.html' %}
+{% load perfume_filters %}
+
+{% block title %}بحث العطور | روائح الذهب{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="page-title">🔍 بحث العطور بالفلتر المخصص</h1>
+       
+        <!-- ====== صندوق البحث (Textbox) ====== -->
+        <div class="search-box" style="text-align: center; margin-bottom: 40px;">
+            <form method="get" class="search-form" style="max-width: 600px; margin: 0 auto;">
+                <input
+                    type="text"
+                    name="q"
+                    placeholder="اكتب اسم العطر هنا..."
+                    value="{{ query|default:'' }}"
+                    class="search-input"
+                    style="width: 70%; padding: 15px; font-size: 1.1rem; border-radius: 12px; border: 2px solid #d4a853;"
+                >
+                <button type="submit" class="btn btn-primary" style="padding: 15px 30px; font-size: 1.1rem;">
+                    بحث
+                </button>
+            </form>
+        </div>
+
+        <!-- ====== نتيجة البحث باستخدام الفلاتر المخصصة ====== -->
+        {% if result %}
+            <div class="search-result" style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); max-width: 700px; margin: 0 auto;">
+                <h2 style="color: #d4a853; margin-bottom: 20px;">✨ نتيجة البحث</h2>
+               
+                <!-- فلتر title -->
+                <h3>الاسم: {{ result.name|title }}</h3>
+               
+                <!-- فلتر upper -->
+                <p><strong>الماركة:</strong> {{ result.brand|upper }}</p>
+               
+                <!-- فلتر truncatechars -->
+                <p><strong>الوصف:</strong> {{ result.description|truncatechars:100 }}</p>
+               
+                <!-- فلتر currency (المخصص!) -->
+                <p style="font-size: 1.5rem; color: #d4a853; font-weight: 800;">
+                    <strong>السعر:</strong> {{ result.price|currency }}
+                </p>
+               
+                <!-- فلتر perfume_status (المخصص!) -->
+                <p>
+                    <strong>حالة المخزون:</strong>
+                    <span style="padding: 5px 15px; border-radius: 20px; background: #f0f0f0;">
+                        {{ result.stock|perfume_status }}
+                    </span>
+                </p>
+               
+                <!-- فلتر yemeni (المخصص!) -->
+                <p style="margin-top: 15px; color: #666; font-style: italic;">
+                    💬 باللهجة اليمنية: {{ "ماذا تفعل اليوم؟"|yemeni }}
+                </p>
+               
+                <div style="margin-top: 20px;">
+                    <a href="{% url 'shop:product_detail' result.pk %}" class="btn btn-primary">عرض التفاصيل</a>
+                    {% if result.stock > 0 %}
+                        <a href="{% url 'shop:add_to_cart' result.pk %}" class="btn btn-outline">🛒 أضف للسلة</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% elif query %}
+            <div class="empty-state" style="text-align: center; padding: 40px;">
+                <p>😔 لم يتم العثور على عطر مطابق لـ: <strong>"{{ query }}"</strong></p>
+                <p>جرب البحث بكلمات أخرى مثل: عود، شانيل، مسك</p>
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 40px; color: #666;">
+                <p>🔍 اكتب اسم العطر في الصندوق أعلاه والضغط بحث</p>
+                <p>مثال: عود الملكي، شانيل، مسك الطهارة</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

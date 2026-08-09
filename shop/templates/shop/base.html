@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}روائح الذهب | متجر العطور الفاخرة{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'shop/css/style.css' %}">
+</head>
+<body>
+    <!-- ====== Navbar ====== -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'shop:home' %}" class="logo">
+                <span class="logo-icon">🌸</span>
+                <span class="logo-text">روائح الذهب</span>
+            </a><div class="nav-links">
+    <a href="{% url 'shop:home' %}" class="nav-link">الرئيسية</a>
+    <a href="{% url 'shop:product_list' %}" class="nav-link">العطور</a>
+    <a href="{% url 'shop:perfume_search' %}" class="nav-link">🔍 بحث بالفلتر</a>
+   
+    {% if user.is_authenticated %}
+        <a href="{% url 'account:profile' %}" class="nav-link">👤 الملف الشخصي</a>
+        <a href="{% url 'shop:my_orders' %}" class="nav-link">طلباتي</a>
+        <a href="{% url 'shop:cart' %}" class="nav-link cart-link">
+            🛒 السلة
+            {% if cart_count > 0 %}
+                <span class="cart-badge">{{ cart_count }}</span>
+            {% endif %}
+        </a>
+        <span class="nav-user">👤 {{ user.username|truncatechars:10 }}</span>
+        <a href="{% url 'shop:home' %}" class="nav-link btn-logout">خروج</a>
+    #{% else %}
+        <a href="{% url 'login' %}" class="nav-link">🔑 تسجيل دخول</a>
+        <a href="{% url 'account:register' %}" class="nav-link btn-register">حساب جديد</a>
+    {% endif %}
+</div>
+        </div>
+    </nav>
+
+    <!-- ====== Messages ====== -->
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- ====== Main Content ====== -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ====== Footer ====== -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>روائح الذهب</h3>
+                <p>وجهتك الأولى للعطور الفاخرة والأصيلة</p>
+            </div>
+            <div class="footer-section">
+                <h3>روابط سريعة</h3>
+                <a href="{% url 'shop:home' %}">الرئيسية</a>
+                <a href="{% url 'shop:product_list' %}">تصفح العطور</a>
+            </div>
+            <div class="footer-section">
+                <h3>تواصل معنا</h3>
+                <p>📧 info@golden-scents.com</p>
+                <p>📞 966-50-123-4567</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 روائح الذهب - جميع الحقوق محفوظة</p>
+        </div>
+    </footer>
+
+</body>
+</html>

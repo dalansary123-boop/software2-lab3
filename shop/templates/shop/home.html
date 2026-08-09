@@ -1,0 +1,135 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+{% load perfume_filters %}  
+{{" ماذا ماذا تفعل تفعل اليوم"|yemeni}}
+{% block title %}{{ site_name }} | {{ welcome_message }}{% endblock %}
+
+{% block content %}
+<!-- ====== Hero Section ====== -->
+<section class="hero">
+    <div class="hero-content">
+        <!-- دالة upper -->
+        <h1 class="hero-title">{{ welcome_message|upper }}</h1>
+        <!-- دالة truncatechars -->
+        <p class="hero-subtitle">اكتشف تشكيلتنا الفريدة من العطور العالمية الفاخرة بأفضل الأسعار{{ "!"|upper }}</p>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-primary">تصفح العطور</a>
+    </div>
+</section>
+
+<!-- ====== Categories Section ====== -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">تصنيفات العطور</h2>
+        <div class="categories-grid">
+            {% for category in categories %}
+                <!-- ====== حلقة for + شرط if ====== -->
+                <div class="category-card">
+                    <!-- دالة capfirst -->
+                    <h3>{{ category.name|capfirst }}</h3>
+                    <!-- دالة truncatechars -->
+                    <p>{{ category.description|default:"اكتشف مجموعة مختارة من العطور"|truncatechars:50 }}</p>
+                    <a href="{% url 'shop:product_list' %}?category={{ category.id }}" class="btn btn-small">عرض المنتجات</a>
+                </div>
+            {% empty %}
+                <p class="empty-message">لا توجد فئات متاحة حالياً</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ====== Featured Perfumes ====== -->
+<section class="section section-alt">
+    <div class="container">
+        <h2 class="section-title">عطور مميزة</h2>
+        <div class="products-grid">
+            {% for perfume in featured_perfumes %}
+                <div class="product-card">
+                    <div class="product-image">
+                        {% if perfume.image %}
+                            <img src="{{ perfume.image.url }}" alt="{{ perfume.name }}">
+                        {% else %}
+                            <div class="no-image">🌸</div>
+                        {% endif %}
+                        
+                        <!-- ====== شرط if للخصم ====== -->
+                        {% if perfume.old_price and perfume.old_price > perfume.price %}
+                            <span class="discount-badge">-{{ perfume.discount_percentage }}%</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="product-info">
+                        <!-- دالة title -->
+                        <h3 class="product-name">{{ perfume.name|title }}</h3>
+                        <!-- دالة upper -->
+                        <p class="product-brand">{{ perfume.brand|upper }}</p>
+                        
+                        <div class="product-price">
+                            <!-- دالة floatformat -->
+                            <span class="current-price">{{ perfume.price|floatformat:2 }} ر.س</span>
+                            {% if perfume.old_price %}
+                                <span class="old-price">{{ perfume.old_price|floatformat:2 }} ر.س</span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- ====== شرط if للمخزون ====== -->
+                        {% if perfume.stock > 0 %}
+                            <a href="{% url 'shop:product_detail' perfume.pk %}" class="btn btn-primary">تفاصيل العطر</a>
+                        {% else %}
+                            <span class="out-of-stock">نفذت الكمية</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <p class="empty-message">لا توجد عطور مميزة حالياً</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<!-- ====== New Arrivals ====== -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">وصل حديثاً</h2>
+        <div class="products-grid small-grid">
+            {% for perfume in new_arrivals %}
+                <div class="product-card compact">
+                    <div class="product-image">
+                        {% if perfume.image %}
+                            <img src="{{ perfume.image.url }}" alt="{{ perfume.name }}">
+                        {% else %}
+                            <div class="no-image">🌸</div>
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <h4>{{ perfume.name|truncatechars:20 }}</h4>
+                        <p class="price">{{ perfume.price|floatformat:2 }} ر.س</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ====== Stats Section (لعرض دوال إضافية) ====== -->
+<!-- ====== Stats Section (مع الفلتر المخصص) ====== -->
+<section class="section stats-section">
+    <div class="container">
+        <!-- تجربة الفلتر yemeni -->
+        <h2 class="section-title">{{ "ماذا تفعل اليوم؟"|yemeni }}</h2>
+        
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-number">{{ categories|length }}</span>
+                <span class="stat-label">فئة</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">{{ featured_perfumes|length }}</span>
+                <span class="stat-label">عطر مميز</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">{{ cart_count|default:"0" }}</span>
+                <span class="stat-label">في السلة</span>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

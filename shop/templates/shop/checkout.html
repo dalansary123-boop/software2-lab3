@@ -1,0 +1,55 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}إتمام الطلب | روائح الذهب{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="page-title">📝 إتمام الطلب</h1>
+        
+        <div class="checkout-container">
+            <!-- ====== Order Summary ====== -->
+            <div class="checkout-summary">
+                <h3>ملخص الطلب</h3>
+                
+                {% for item in cart_items %}
+                    <div class="checkout-item">
+                        <span>{{ item.perfume.name|truncatechars:25 }} (×{{ item.quantity }})</span>
+                        <span>{{ item.total_price|floatformat:2 }} ر.س</span>
+                    </div>
+                {% endfor %}
+                
+                <div class="checkout-total">
+                    <span>الإجمالي:</span>
+                    <span class="total-amount">{{ total|floatformat:2 }} ر.س</span>
+                </div>
+            </div>
+            
+            <!-- ====== Checkout Form ====== -->
+            <div class="checkout-form">
+                <h3>معلومات الشحن</h3>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="field-error">
+                                    {{ field.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    
+                    <button type="submit" class="btn btn-primary btn-large btn-block">
+                        ✅ تأكيد الطلب ({{ total|floatformat:2 }} ر.س)
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

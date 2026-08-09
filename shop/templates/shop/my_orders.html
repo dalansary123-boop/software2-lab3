@@ -1,0 +1,47 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}طلباتي | روائح الذهب{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="page-title">📦 طلباتي</h1>
+        
+        {% if orders %}
+            <div class="orders-list">
+                {% for order in orders %}
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <!-- دالة date -->
+                                <span class="order-number">طلب #{{ order.id }}</span>
+                                <span class="order-date">{{ order.created_at|date:"Y-m-d" }}</span>
+                            </div>
+                            <span class="order-status status-{{ order.status }}">{{ order.get_status_display }}</span>
+                        </div>
+                        
+                        <div class="order-items">
+                            {% for item in order.items.all %}
+                                <div class="order-item">
+                                    <span>{{ item.perfume.name|truncatechars:30 }} (×{{ item.quantity }})</span>
+                                    <span>{{ item.total_price|floatformat:2 }} ر.س</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="order-total">
+                            <span>الإجمالي:</span>
+                            <span>{{ order.total_amount|floatformat:2 }} ر.س</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>📭 لا توجد طلبات حالياً</p>
+                <a href="{% url 'shop:product_list' %}" class="btn btn-primary">تصفح العطور</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

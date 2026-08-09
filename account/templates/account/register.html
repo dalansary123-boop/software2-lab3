@@ -1,0 +1,43 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block title %}إنشاء حساب | روائح الذهب{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-card">
+                <h1 class="auth-title">🌸 إنشاء حساب جديد</h1>
+                <p class="auth-subtitle">أنشئ حسابك لحفظ طلباتك وبياناتك</p>
+               
+                <form method="post" class="auth-form" action="{% url 'account:register' %}">
+                    {% csrf_token %}
+                   
+                    {% for field in form %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="field-error">{{ field.errors|join:", " }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                   
+                    <button type="submit" class="btn btn-primary btn-large btn-block">إنشاء الحساب</button>
+                </form>
+               
+                <!-- ← ← ← رابط للدخول لو عنده حساب -->
+                <p class="auth-footer" style="margin-top: 20px; text-align: center;">
+                    لديك حساب بالفعل؟
+                    <a href="{% url 'login' %}" style="color: #d4a853; font-weight: 700;">تسجيل دخول</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+
+
+
