@@ -5,14 +5,24 @@ from django.contrib import messages
 from django.db.models import Q
 from .models import Category, Perfume, CartItem, Order, OrderItem
 from .forms import  OrderForm
-
+from .queries import (
+    get_all_perfumes,
+    get_available_perfumes,
+    search_perfumes,
+    get_featured_perfumes,
+    get_perfumes_without_stock,
+    get_perfumes_ordered_by_price,
+    get_perfumes_except,
+    get_perfumes_count,
+    perfume_exists,
+)
 
 def home(request):
     """الصفحة الرئيسية - تعرض العطور المميزة والفئات"""
     # ===== متغيرات محلية (Local Variables) =====
-    featured_perfumes = Perfume.objects.filter(is_featured=True, stock__gt=0)[:6]
+    featured_perfumes = get_featured_perfumes()[:6]
     all_categories = Category.objects.all()
-    new_arrivals = Perfume.objects.filter(stock__gt=0).order_by('-created_at')[:4]
+    new_arrivals = get_available_perfumes().order_by('-created_at')[:4]
     
     # حساب عدد العناصر في السلة للمستخدم
     cart_count = 0
@@ -150,15 +160,28 @@ def cart(request):
     return render(request, 'shop/cart.html', context)
 
 
+# @login_required
+# def remove_from_cart(request, pk):
+#     """حذف من السلة"""
+#     cart_item = get_object_or_404(CartItem, pk=pk, user=request.user)
+#     perfume_name = cart_item.perfume.name
+#     cart_item.delete()
+#     messages.success(request, f'تم إزالة {perfume_name} من السلة')
+#     return redirect('cart')
+
 @login_required
 def remove_from_cart(request, pk):
-    """حذف من السلة"""
+    """حذف من السلة - يستخدم POST فقط (Safe Delete)"""
     cart_item = get_object_or_404(CartItem, pk=pk, user=request.user)
-    perfume_name = cart_item.perfume.name
-    cart_item.delete()
-    messages.success(request, f'تم إزالة {perfume_name} من السلة')
-    return redirect('cart')
-
+    
+    if request.method == 'POST':
+        perfume_name = cart_item.perfume.name
+        cart_item.delete()
+        messages.success(request, f'تم إزالة {perfume_name} من السلة')
+    else:
+        messages.warning(request, 'الحذف يجب أن يكون عبر POST فقط!')
+    
+    return redirect('shop:cart')
 
 @login_required
 def update_cart(request, pk):

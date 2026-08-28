@@ -14,8 +14,8 @@ class UserProfile(models.Model):
     class Meta:
         verbose_name = 'ملف مستخدم'
         verbose_name_plural = 'ملفات المستخدمين'
-
-    def str(self):
+        
+    def __str__(self):
         return self.user.username
 
     def get_full_name(self):

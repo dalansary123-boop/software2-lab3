@@ -42,7 +42,11 @@
                                 <span class="total-price">{{ item.total_price|floatformat:2 }} ر.س</span>
                             </div>
                             
-                            <a href="{% url 'shop:remove_from_cart' item.pk %}" class="btn-remove" onclick="return confirm('هل أنت متأكد من الحذف؟')">🗑</a>
+                            <!-- <a href="{% url 'shop:remove_from_cart' item.pk %}" class="btn-remove" onclick="return confirm('هل أنت متأكد من الحذف؟')">🗑</a> -->
+                             <form method="post" action="{% url 'shop:remove_from_cart' item.pk %}" style="display: inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn-remove" onclick="return confirm('هل أنت متأكد من الحذف؟')">🗑</button>
+</form>
                         </div>
                     {% endfor %}
                 </div>

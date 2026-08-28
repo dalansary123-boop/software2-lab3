@@ -13,10 +13,25 @@ class Category(models.Model):
         verbose_name_plural = 'الفئات'
         ordering = ['name']
 
-    def str(self):
+    def __str__(self):
         return self.name
 
+class ScentNote(models.Model):
+    """مكونات الرائحة في العطر"""
+    name = models.CharField(
+        max_length=100,
+        unique=True,
+        verbose_name='اسم مكوّن الرائحة'
+    )
 
+    class Meta:
+        verbose_name = 'مكوّن رائحة'
+        verbose_name_plural = 'مكونات الرائحة'
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+    
 class Perfume(models.Model):
     """نموذج العطر"""
     name = models.CharField(max_length=200, verbose_name='اسم العطر')
@@ -25,6 +40,12 @@ class Perfume(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='السعر')
     old_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, verbose_name='السعر القديم')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='perfumes', verbose_name='الفئة')
+    scent_notes = models.ManyToManyField(
+    ScentNote,
+    blank=True,
+    related_name='perfumes',
+    verbose_name='مكونات الرائحة'
+)
     image = models.ImageField(upload_to='perfumes/', blank=True, null=True, verbose_name='صورة العطر')
     stock = models.PositiveIntegerField(default=10, verbose_name='الكمية المتوفرة')
     is_featured = models.BooleanField(default=False, verbose_name='مميز')
@@ -35,7 +56,7 @@ class Perfume(models.Model):
         verbose_name_plural = 'العطور'
         ordering = ['-created_at']
 
-    def str(self):
+    def __str__(self):
         return f"{self.name} - {self.brand}"
 
     def discount_percentage(self):
@@ -59,7 +80,7 @@ class CartItem(models.Model):
     def total_price(self):
         return self.quantity * self.perfume.price
 
-    def str(self):
+    def __str__(self):
         return f"{self.perfume.name} ({self.quantity})"
 
 
@@ -87,7 +108,7 @@ class Order(models.Model):
         verbose_name_plural = 'الطلبات'
         ordering = ['-created_at']
 
-    def str(self):
+    def __str__(self):
         return f"طلب #{self.id}"
 
 
